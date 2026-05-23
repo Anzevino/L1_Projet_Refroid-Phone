@@ -42,6 +42,13 @@ LTR303 lightsensor;
 KXTJ3 myIMU(0x0E); // Address can be 0x0E or 0x0F
 SHTC3 s(Wire);
 
+#define PIN_RELAIS 2
+#define RELAIS_ON LOW
+#define RELAIS_OFF HIGH
+
+float seuil_haut = 29.0;
+float seuil_bas = 28.0;
+
 float   sampleRate = 6.25;  // HZ - Samples per second - 0.781, 1.563, 3.125, 6.25, 12.5, 25, 50, 100, 200, 400, 800, 1600Hz
 uint8_t accelRange = 2;     // Accelerometer range = 2, 4, 8, 16g
 
@@ -264,6 +271,18 @@ void do_send(osjob_t* j){
     else {      
             s.begin(true);
             int t = s.readTempC()*10;
+            float tempC = t / 10.0;
+
+    if (tempC >= 29.0) {
+    // Ventilateur ON
+      digitalWrite(PIN_RELAIS, RELAIS_ON);
+      Serial.println(">>> Ventilateur ON");
+    } else if (tempC <= 28.0) {
+      // Ventilateur OFF
+      digitalWrite(PIN_RELAIS, RELAIS_OFF);
+      Serial.println(">>> Ventilateur OFF");
+    }
+            
             int h = s.readHumidity()*2;
             int bat = (int)(readVcc()/10); // multiply by 10 for V in Cayenne
             int l = readLight(); // light sensor in Lx
@@ -327,6 +346,9 @@ void setup() {
     Serial.println("Starting");
     
     Wire.begin();
+
+    pinMode(PIN_RELAIS, OUTPUT);
+    digitalWrite(PIN_RELAIS, RELAIS_OFF);
 
     s.begin(true);
     
