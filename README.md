@@ -1,4 +1,4 @@
-Pour ce projet de CSF (Communication Sans Fil), on a eu avec mon collègue Mr. ANZEVINO comme idée un projet qui consiste à refroidir un objet éléctronique.
+Pour ce projet de CSF (Communication Sans Fil), on a eu avec mon collègue Mr. ANZEVINO comme idée d'un projet qui consiste à refroidir un objet éléctronique.
 L'idée étant de poser l'objet sur le support, qui ce dernier comporte un capteur de température (qu'on trouve sur les cartes UCA fourni) et que si cet objet 
 dépasse un certain seuil de température (défini dans le code dans Arduino IDE), cela ferait tourner un ventilateur qui permettra justement de refroidir l'objet
 concerné. Bien entendu, si la température redescend sur un autre seuil défini, alors le ventilateur en question céssera de tourner. Toutefois il fallait bien 
