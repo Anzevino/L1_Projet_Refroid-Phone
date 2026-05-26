@@ -1,4 +1,4 @@
-Tu diras : (dans l'idée hein)
-Tu t'es occupé du powerpoint diaporama mi semestre et celui du rendu final
-Tu t'es occupé de la partie circuit (en corelation avec le code et branchement avec le relais le vbus et tout (parle aussi des problemes qu'on a rencontré), du ventilateur ect...)
-Et sur la création 3D fablab du projet CSF
+Contributions au projet par ANZEVINO Mario:
+- Création du diaporama de présentation du projet pour l'évaluation de mi-semestre et l'évaluation finale;
+- Réalisation du circuit éléctronique avec les composantes (le relais SRD-05VDC-SL-C, la carte UCA et le ventilateur), même si j'ai rencontré quelques problèmes, notamment avec le ventilateur qui tourne en continu même quand la température est en dessous du seuil;
+- Réalisation du boîtier avec des techniques de découpage laser au Fablab de l'Université.
