@@ -23,5 +23,5 @@ et jusqu'à quelques jours avant le rendu final la partie code à finir avec not
 Tago.io), avec également une autre partie "Document" qui indique "Qui s'est occupé de quoi dans le projet" entre nous.
 
 Enfin, pour finaliser ce projet et lui donner une véritable dimension physique avant la présentation finale, nous sommes passés par le FabLab. Cela nous a 
-permis de modéliser notre support en 3D et de l'imprimer à l'aide d'une imprimante 3D, afin d'avoir un véritable un bon rendu final sur lequel intégrer notre 
+permis de modéliser notre support en 3D et de l'imprimer à l'aide d'un laser, afin d'avoir un véritable un bon rendu final sur lequel intégrer notre 
 carte UCA et le ventilateur."
