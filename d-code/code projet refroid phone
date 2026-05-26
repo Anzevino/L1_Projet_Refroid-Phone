@@ -1,20 +1,110 @@
-void setup() {
-  // 1. On initialise la communication série à 115200 bauds
-  Serial.begin(115200);
-  
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(2, OUTPUT);
+#include <Wire.h>
 
-  Serial.println("--- Systeme Demarre ---");
+#define SHTC3_ADDR 0x70
+#define FAN_PIN 2
+
+const float SEUIL_TEMP = 30.90;
+
+unsigned long previousTempMillis = 0;
+bool fanState = false;
+
+uint8_t crc8(const uint8_t *data, int len) {
+  uint8_t crc = 0xFF;
+  for (int j = 0; j < len; j++) {
+    crc ^= data[j];
+    for (int i = 0; i < 8; i++) {
+      if (crc & 0x80) {
+        crc = (crc << 1) ^ 0x31;
+      } else {
+        crc <<= 1;
+      }
+    }
+  }
+  return crc;
 }
 
-// the loop function runs over and over again forever
+bool readSHTC3(float &temperature) {
+  Wire.beginTransmission(SHTC3_ADDR);
+  Wire.write(0x35);
+  Wire.write(0x17);
+  if (Wire.endTransmission() != 0) return false;
+
+  delay(1);
+
+  Wire.beginTransmission(SHTC3_ADDR);
+  Wire.write(0x78);
+  Wire.write(0x66);
+  if (Wire.endTransmission() != 0) return false;
+
+  delay(20);
+
+  Wire.requestFrom(SHTC3_ADDR, 6);
+  if (Wire.available() != 6) return false;
+
+  uint8_t tmsb = Wire.read();
+  uint8_t tlsb = Wire.read();
+  uint8_t tcrc = Wire.read();
+  uint8_t hmsb = Wire.read();
+  uint8_t hlsb = Wire.read();
+  uint8_t hcrc = Wire.read();
+
+  uint8_t tempData[2] = {tmsb, tlsb};
+  uint8_t humData[2]  = {hmsb, hlsb};
+
+  if (crc8(tempData, 2) != tcrc) return false;
+  if (crc8(humData, 2) != hcrc) return false;
+
+  uint16_t rawTemp = ((uint16_t)tmsb << 8) | tlsb;
+  temperature = -45.0 + 175.0 * ((float)rawTemp / 65535.0);
+
+  Wire.beginTransmission(SHTC3_ADDR);
+  Wire.write(0xB0);
+  Wire.write(0x98);
+  Wire.endTransmission();
+
+  return true;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin();
+
+  pinMode(FAN_PIN, OUTPUT);
+  digitalWrite(FAN_PIN, LOW);
+
+  Serial.println("--- Systeme Demarre ---");
+  Serial.print("Seuil temperature: ");
+  Serial.print(SEUIL_TEMP, 1);
+  Serial.println(" C");
+}
+
 void loop() {
-  Serial.println("Ventilateur: ALLUME");
-  digitalWrite(2, HIGH);  // change state of the LED by setting the pin to the HIGH voltage level
-  delay(10000);                      // wait for 10 seconds
-  
-  Serial.println("Ventilateur: ETEINT");
-  digitalWrite(2, LOW);   // change state of the LED by setting the pin to the LOW voltage level
-  delay(10000);                      // wait for 10 seconds
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - previousTempMillis >= 5000) {
+    previousTempMillis = currentMillis;
+
+    float tempC;
+    if (readSHTC3(tempC)) {
+      Serial.print("Temperature: ");
+      Serial.print(tempC, 2);
+      Serial.println(" C");
+
+      if (tempC >= SEUIL_TEMP) {
+        if (!fanState) {
+          fanState = true;
+          digitalWrite(FAN_PIN, HIGH);
+          Serial.println("Ventilateur: ALLUME");
+        }
+      } else {
+        if (fanState) {
+          fanState = false;
+          digitalWrite(FAN_PIN, LOW);
+          Serial.println("Ventilateur: ETEINT");
+        }
+      }
+    } else {
+      Serial.println("Erreur lecture SHTC3");
+    }
+  }
 }
