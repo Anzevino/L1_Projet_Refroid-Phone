@@ -15,7 +15,7 @@ protole LoRaWAN qui était donc utilisé dans la partie code Arduino IDE.
 
 La carte transmet la température via le protocole LoRaWAN au réseau TTN. Ce dernier fait alors le pont avec la plateforme Tago.io, qui se charge d'envoyer un 
 email d'alerte dès que le seuil de température est franchi. Ainsi pour éviter d'impliquer "Sleep" sur notre code (qui est contradictoire à ce que l'on veut), 
-on a alors branché une seconde carte UCA mais uniquement pour l'envoi de message avec LoRaWAN (un des codes préfaits dans le GitHub de Mr.Ferrero).
+on a alors branché une seconde carte UCA mais uniquement pour l'envoi de uplink avec LoRaWAN (un des codes préfaits dans le GitHub de Mr.Ferrero).
 
 Dans les premières semaines, il fallait apprendre et comprendre le fonctionnement de GitHub (Obligatoire pour le rendu du projet final) puis la semaine d'après 
 était le début de la partie codage, en commençant simplement par afficher en temps réel sur le serial monitor la température que detectait le capteur SHT. Plus 
